@@ -1,0 +1,32 @@
+security:
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+            cost: 13
+
+    providers:
+        doctrine:
+            entity:
+                class: AppBundle:User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: ~
+            pattern: ^/
+            form_login:
+                login_path: login
+                check_path: login_check
+                always_use_default_target_path:  true
+                default_target_path:  /
+            logout: ~
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/users, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }  # Ajout : autorise /
+        - { path: ^/, roles: ROLE_USER }
