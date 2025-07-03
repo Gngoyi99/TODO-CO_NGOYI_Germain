@@ -14,6 +14,16 @@ Avant d’installer le projet, assurez-vous d’avoir les outils suivants instal
 - MySQL >= 8.0 ou MariaDB >= 10.5
 - Docker (optionnel pour une installation via conteneurs)
 
+## Fonctionnalités
+
+- Authentification et gestion des utilisateurs
+- CRUD complet pour les tâches
+- Marquage des tâches comme terminées
+- Interface responsive (Bootstrap 5)
+- Sécurité renforcée avec encodage des mots de passe (bcrypt)
+- Tests unitaires et fonctionnels
+- Code optimisé et conforme aux standards PSR
+
 ## Installation
 
 Clonez le projet depuis le dépôt GitHub :
@@ -120,24 +130,5 @@ Cela démarre :
 - MySQL
 - phpMyAdmin (accessible sur [http://localhost:8080](http://localhost:8080))
 
-## Fonctionnalités
 
-- Authentification et gestion des utilisateurs
-- CRUD complet pour les tâches
-- Marquage des tâches comme terminées
-- Interface responsive (Bootstrap 5)
-- Sécurité renforcée avec encodage des mots de passe (bcrypt)
-- Tests unitaires et fonctionnels
-- Code optimisé et conforme aux standards PSR
 
-## Contribution
-
-1. Fork le projet
-2. Crée une branche (`git checkout -b feature/NouvelleFeature`)
-3. Commit tes modifications (`git commit -am 'Ajout d’une nouvelle fonctionnalité'`)
-4. Push la branche (`git push origin feature/NouvelleFeature`)
-5. Ouvre une Pull Request
-
-## Licence
-
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
