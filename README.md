@@ -14,16 +14,6 @@ Avant d’installer le projet, assurez-vous d’avoir les outils suivants instal
 - MySQL >= 8.0 ou MariaDB >= 10.5
 - Docker (optionnel pour une installation via conteneurs)
 
-## Fonctionnalités
-
-- Authentification et gestion des utilisateurs
-- CRUD complet pour les tâches
-- Marquage des tâches comme terminées
-- Interface responsive (Bootstrap 5)
-- Sécurité renforcée avec encodage des mots de passe (bcrypt)
-- Tests unitaires et fonctionnels
-- Code optimisé et conforme aux standards PSR
-
 ## Installation
 
 Clonez le projet depuis le dépôt GitHub :
