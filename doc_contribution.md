@@ -7,7 +7,7 @@ Ce guide explique comment contribuer efficacement au projet, quelles règles de 
 ## A. Organisation du projet
 
 - **Branche principale :** `main`
-- **Branches de développement :** `feature/`, `fix/`, `hotfix/`
+- **Branches de développement :** `feature/`, `fix/`
 
 Chaque fonctionnalité ou correction doit être développée dans une branche dédiée en suivant une convention de nommage claire :
 
