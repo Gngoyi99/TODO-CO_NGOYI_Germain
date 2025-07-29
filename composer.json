@@ -4,50 +4,44 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "": "src/"
-        },
-        "classmap": [
-            "app/AppKernel.php",
-            "app/AppCache.php"
-        ]
+            "App\\": "src/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "App\\Tests\\": "tests/"
         }
     },
     "require": {
-        "php": ">=5.5.9",
-        "symfony/symfony": "3.1.*",
-        "doctrine/orm": "^2.5",
-        "doctrine/doctrine-bundle": "^1.6",
-        "doctrine/doctrine-cache-bundle": "^1.2",
-        "symfony/swiftmailer-bundle": "^2.3",
-        "symfony/monolog-bundle": "^2.8",
-        "symfony/polyfill-apcu": "^1.0",
-        "sensio/distribution-bundle": "^5.0",
-        "sensio/framework-extra-bundle": "^3.0.2",
-        "incenteev/composer-parameter-handler": "^2.0"
+        
+        "php": "^8.1",
+        "symfony/symfony": "5.4.*",
+        "symfony/maker-bundle": "^1.0",
+        "doctrine/doctrine-bundle": "^2.13",
+        "symfony/monolog-bundle": "^3.10",
+        "doctrine/orm": "^2.10",
+        "doctrine/dbal": "^3.0",
+        "twig/twig": "^3.0",
+        "doctrine/doctrine-migrations-bundle": "^3.4",
+        "monolog/monolog": "^2.0",
+        "symfony/routing": "^5.4",
+        "symfony/dotenv": "*",
+        "doctrine/annotations": "^2.0",
+        "symfony/twig-bundle": "*",
+        "symfony/asset": "*"
     },
     "require-dev": {
-        "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.0",
-        "phpunit/phpunit": "^5.7"
+        "symfony/phpunit-bridge": "^5.4",
+        "phpunit/phpunit": "^9.5",
+        "symfony/flex": "^2.8"
     },
     "scripts": {
-        "symfony-scripts": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
-        ],
+        
         "post-install-cmd": [
-            "@symfony-scripts"
+            "Symfony\\Flex\\Flex::install"
         ],
         "post-update-cmd": [
-            "@symfony-scripts"
+            "Symfony\\Flex\\Flex::install"
         ]
     },
     "extra": {
@@ -59,6 +53,11 @@
         "symfony-assets-install": "relative",
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true
         }
     }
 }

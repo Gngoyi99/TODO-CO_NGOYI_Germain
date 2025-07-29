@@ -1,0 +1,16 @@
+# config/packages/doctrine.yaml
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+
+    orm:
+        auto_generate_proxy_classes: true
+
+        # Ne plus se reposer sur auto_mapping seul, mais déclarer votre mapping
+        mappings:
+            App:
+                is_bundle: false
+                type: attribute        # <<< IMPORTANT : on utilise les Attributes
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

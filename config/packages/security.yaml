@@ -1,0 +1,36 @@
+# config/packages/security.yaml
+security:
+    enable_authenticator_manager: true
+
+    password_hashers:
+        App\Entity\User:
+            algorithm: auto
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            pattern: ^/
+            provider: app_user_provider
+
+            # on remplace form_login par le nouvel Authenticator
+            custom_authenticators:
+                - App\Security\LoginFormAuthenticator
+
+            logout:
+                path: logout
+                target: login
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/users/create, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/users, roles: ROLE_ADMIN }
+        - { path: ^/,        roles: ROLE_USER }
