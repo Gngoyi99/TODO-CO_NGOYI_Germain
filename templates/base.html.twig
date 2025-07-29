@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>To Do List app</title>
+
+		<!-- Bootstrap Core CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+		<!-- Custom CSS -->
+		<link href="{{ asset('css/shop-homepage.css') }}" rel="stylesheet">
+
+	</head>
+
+	<body>
+		<nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="/login">To Do List app</a>
+
+					<img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms"/>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Page Content -->
+		<div class="container">
+			<div class="row">
+				{% if not app.user and app.request.attributes.get('_route') != 'user_create' %}
+					<a href="{{ path('user_create') }}" class="btn btn-primary btn-sm w-auto">Créer un utilisateur</a>
+				{% endif %}
+
+				{% if app.user %}
+					<a href="{{ path('logout') }}" class="pull-right btn btn-danger btn-sm w-auto">Se déconnecter</a>
+				{% endif %}
+
+				{% if not app.user and app.request.attributes.get('_route') != 'login' %}
+					<a href="{{ path('login') }}" class="btn btn-success btn-sm w-auto">Se connecter</a>
+				{% endif %}
+			</div>
+
+
+			<div class="row">
+				<div
+					class="col-md-12">
+					{# messages “success” #}
+					{% for flash_message in app.flashes('success') %}
+						<div class="alert alert-success" role="alert">
+							<strong>Superbe !</strong>
+							{{ flash_message }}
+						</div>
+					{% endfor %}
+
+					{# messages “error” #}
+					{% for flash_message in app.flashes('error') %}
+						<div class="alert alert-danger" role="alert">
+							<strong>Oops !</strong>
+							{{ flash_message }}
+						</div>
+					{% endfor %}
+
+					{% block header_title %}{% endblock %}
+					{% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">
+					{% endblock %}
+				</div>
+			</div>
+
+			<br/>
+
+			<div class="row">
+				<div class="col-md-12"> {% block body %}{% endblock %}
+					</div>
+				</div>
+			</div>
+			<!-- /.container -->
+
+			<div class="container">
+
+				<hr>
+				<footer>
+					<div class="row">
+						<div class="col-lg-12">
+							<p class="pull-right">Copyright &copy; OpenClassrooms</p>
+						</div>
+					</div>
+				</footer>
+
+			</div>
+
+			 <script
+			      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+			      integrity="sha384-oBqDVmMz5v6uOaV7+7t+U6E1bKkHctmM4lCjQvV0l+Q95u0TMRfvvDgi1S1XrOX1"
+			      crossorigin="anonymous"
+			    ></script>
+			 <script
+			      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+			      integrity="sha384-VO/N2YMD4XD1z+V3+l3B6+VMGmZ6PxEW20qGQxtfN4EkDialectAvoI/R3UEFQkFQ"
+			      crossorigin="anonymous"
+			    ></script>
+		</body>
+	</html>
