@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block header_img %}
+	<img class="slide-image" src="{{ asset('img/todolist_content.jpg') }}" alt="todo list">
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1 class="mb-4">Liste des tâches</h1>
+
+		<a href="{{ path('task_create') }}" class="btn btn-info mb-3">Créer une tâche</a>
+
+		{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+			<a href="{{ path('user_list') }}" class="btn btn-info mb-3">Gestion des utilisateurs</a>
+		{% endif %}
+
+		{% if tasks|length > 0 %}
+			<div class="row">
+				{% for task in tasks %}
+					<div class="col-md-3 mb-4">
+						<div class="card h-100 shadow-sm">
+							<div class="card-body">
+								<h5 class="card-title">
+									<a href="{{ path('task_edit', {'id': task.id}) }}">{{ task.title }}</a>
+								</h5>
+								<p class="card-text">{{ task.content }}</p>
+								<p class="card-text text-muted">
+									<small>Créé par :
+										{% if task.author %}
+											{{ task.author.username }}
+										{% else %}
+											Anonyme
+										{% endif %}
+									</small>
+								</p>
+							</div>
+							<div class="card-footer d-flex justify-content-between align-items-center">
+								<span class="badge bg-{{ task.is_Done ? 'success' : 'secondary' }}">
+									{% if task.is_Done %}
+										<i class="bi bi-check-circle-fill"></i>
+										Faite
+									{% else %}
+										<i class="bi bi-x-circle-fill"></i>
+										À faire
+									{% endif %}
+								</span>
+								<div class="btn-group btn-group-sm" role="group">
+									<form action="{{ path('task_toggle', {'id': task.id}) }}" method="post">
+										<button type="submit" class="btn btn-success w-auto">
+											{% if not task.is_Done %}
+												<i class="bi bi-check2-circle"></i>
+											{% else %}
+												<i class="bi bi-arrow-counterclockwise"></i>
+											{% endif %}
+										</button>
+									</form>
+									{% if app.user and (task.author == app.user or 'ROLE_ADMIN' in app.user.roles) %}
+										<form action="{{ path('task_delete', {'id': task.id}) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer cette tâche ?');">
+											<button type="submit" class="btn btn-danger w-auto">
+												<i class="bi bi-trash"></i>
+											</button>
+										</form>
+									{% endif %}
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+				{% endfor %}
+			</div>
+		{% else %}
+			<div class="alert alert-warning" role="alert">
+				Il n'y a pas encore de tâche enregistrée.
+				<a href="{{ path('task_create') }}" class="btn btn-warning btn-sm ms-2">Créer une tâche</a>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}
