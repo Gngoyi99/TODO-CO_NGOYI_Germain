@@ -41,6 +41,7 @@ task_delete:
     controller: App\Controller\TaskController::deleteTaskAction
     requirements:
         id: '\d+'
+    methods: [POST]
 
 # Inscription
 user_create:

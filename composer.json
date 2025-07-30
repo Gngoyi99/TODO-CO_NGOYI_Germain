@@ -28,7 +28,9 @@
         "symfony/dotenv": "*",
         "doctrine/annotations": "^2.0",
         "symfony/twig-bundle": "*",
-        "symfony/asset": "*"
+        "symfony/asset": "*",
+        "symfony/security-bundle": "^5.4",
+        "symfony/security-http": "^5.4"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^5.4",
