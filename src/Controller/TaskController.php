@@ -91,21 +91,25 @@ class TaskController extends AbstractController
     }
 
     // Suppression d'une tâche
-    public function deleteTaskAction(Task $task, EntityManagerInterface $em): Response
+    public function deleteTaskAction(int $id, Request $request, ManagerRegistry $doctrine): Response
     {
+        $em = $doctrine->getManager();
+        $task = $em->getRepository(Task::class)->find($id);
+
+        if (!$task) {
+            throw $this->createNotFoundException("La tâche avec l'ID {$id} n'existe pas.");
+        }
+
         $user = $this->getUser();
 
-        // Si l'utilisateur n'est pas connecté, refuse
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté.');
         }
 
-        // Si tâche anonyme => seul un admin peut la supprimer
         if ($task->getAuthor() === null && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Seul un administrateur peut supprimer cette tâche anonyme.');
         }
 
-        // Si l'utilisateur n'est pas l'auteur et pas admin => refuse
         if ($task->getAuthor() !== null && $task->getAuthor() !== $user && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('Vous ne pouvez supprimer que vos propres tâches.');
         }
@@ -117,4 +121,5 @@ class TaskController extends AbstractController
 
         return $this->redirectToRoute('task_list');
     }
+
 }
