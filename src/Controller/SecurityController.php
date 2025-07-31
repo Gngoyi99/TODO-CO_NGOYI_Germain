@@ -1,6 +1,4 @@
 <?php
-// src/Controller/SecurityController.php
-
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,17 +8,24 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/login', name: 'login', methods: ['GET','POST'])]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    #[Route('/login', name: 'login', methods: ['GET','POST'])]
+    public function login(AuthenticationUtils $authUtils): Response
     {
-        // Récupère l’erreur de connexion (s’il y en a)
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // Dernier identifiant saisi
-        $lastUsername = $authenticationUtils->getLastUsername();
+        // Si déjà connecté, redirige vers la liste des tâches
+        if ($this->getUser()) {
+            return $this->redirectToRoute('task_list');
+        }
 
         return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error'         => $error,
+            'last_username' => $authUtils->getLastUsername(),
+            'error'         => $authUtils->getLastAuthenticationError(),
         ]);
+    }
+
+    #[Route('/logout', name: 'logout', methods: ['GET','POST'])]
+    public function logout(): void
+    {
+        // Ce code n'est jamais exécuté, c'est géré par le firewall.
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

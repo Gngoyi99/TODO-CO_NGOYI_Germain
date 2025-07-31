@@ -2,20 +2,30 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
-    # ---------- session sans dépréciation ----------
     session:
-        # on passe de handler_id à storage_factory_id
         storage_factory_id: session.storage.factory.native
-        # conserve le chemin de sauvegarde
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+        cookie_secure: auto
+        cookie_samesite: lax
 
-    # ---------- le reste sans changement -------------
     router:
         utf8: true
         strict_requirements: true
+
     csrf_protection: true
     form: ~
+
     validation:
-        enable_annotations: true
+        enable_attributes: true
+
     http_method_override: true
     assets: ~
+
+    handle_all_throwables: true
+
+    php_errors:
+        log: true
+
+    # Désactive l’intégration automatique des annotations
+    annotations:
+        enabled: false

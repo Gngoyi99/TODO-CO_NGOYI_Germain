@@ -5,36 +5,38 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
+#[Route('/tasks', name: 'task_')]
 class TaskController extends AbstractController
 {
-    // Liste des tâches
-    public function listAction(ManagerRegistry $doctrine): Response
+    #[Route('', name: 'list', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function list(EntityManagerInterface $em): Response
     {
-        $tasks = $doctrine->getRepository(Task::class)->findAll();
+        $tasks = $em->getRepository(Task::class)->findAll();
 
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
         ]);
     }
 
-    // Création d'une nouvelle tâche
-    public function createAction(Request $request, ManagerRegistry $doctrine): Response
+    #[Route('/create', name: 'create', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function create(Request $request, EntityManagerInterface $em): Response
     {
         $task = new Task();
-        $task->setAuthor($this->getUser()); // null si anonyme
+        $task->setAuthor($this->getUser());
 
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $doctrine->getManager();
             $em->persist($task);
             $em->flush();
 
@@ -47,42 +49,43 @@ class TaskController extends AbstractController
         ]);
     }
 
-    // Édition d'une tâche existante
-    public function editAction(int $id, Request $request, ManagerRegistry $doctrine): Response
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function edit(Task $task, Request $request, EntityManagerInterface $em): Response
     {
-        $task = $doctrine->getRepository(Task::class)->find($id);
-        if (!$task) {
-            throw $this->createNotFoundException("La tâche #{$id} n'existe pas.");
+        if ($task->getAuthor() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous ne pouvez modifier que vos propres tâches.');
         }
 
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $doctrine->getManager()->flush();
+            $em->flush();
+
             $this->addFlash('success', 'La tâche a bien été modifiée.');
             return $this->redirectToRoute('task_list');
         }
 
         return $this->render('task/edit.html.twig', [
-            'form' => $form->createView(),
             'task' => $task,
+            'form' => $form->createView(),
         ]);
     }
 
-    // Basculer l'état "fait / non fait" d'une tâche
-    public function toggleTaskAction(int $id, ManagerRegistry $doctrine): Response
+    #[Route('/{id}/toggle', name: 'toggle', methods: ['POST'], requirements: ['id' => '\\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function toggle(Task $task, EntityManagerInterface $em): Response
     {
-        $task = $doctrine->getRepository(Task::class)->find($id);
-        if (!$task) {
-            throw $this->createNotFoundException("La tâche #{$id} n'existe pas.");
+        if ($task->getAuthor() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Vous ne pouvez modifier l’état que de vos propres tâches.');
         }
 
         $task->toggle(! $task->is_Done());
-        $doctrine->getManager()->flush();
+        $em->flush();
 
         $this->addFlash('success', sprintf(
-            'La tâche "%s" a bien été marquée comme %s.',
+            'La tâche "%s" est maintenant %s.',
             $task->getTitle(),
             $task->is_Done() ? 'faite' : 'non faite'
         ));
@@ -90,36 +93,20 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_list');
     }
 
-    // Suppression d'une tâche
-    public function deleteTaskAction(int $id, Request $request, ManagerRegistry $doctrine): Response
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '\\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function delete(Task $task, EntityManagerInterface $em): Response
     {
-        $em = $doctrine->getManager();
-        $task = $em->getRepository(Task::class)->find($id);
-
-        if (!$task) {
-            throw $this->createNotFoundException("La tâche avec l'ID {$id} n'existe pas.");
-        }
-
-        $user = $this->getUser();
-
-        if (!$user) {
-            throw $this->createAccessDeniedException('Vous devez être connecté.');
-        }
-
-        if ($task->getAuthor() === null && !$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('Seul un administrateur peut supprimer cette tâche anonyme.');
-        }
-
-        if ($task->getAuthor() !== null && $task->getAuthor() !== $user && !$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('Vous ne pouvez supprimer que vos propres tâches.');
+        if ($task->getAuthor() === null && !$this->isGranted('ROLE_ADMIN')
+            || ($task->getAuthor() !== null && $task->getAuthor() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN'))
+        ) {
+            throw $this->createAccessDeniedException('Vous ne pouvez supprimer cette tâche.');
         }
 
         $em->remove($task);
         $em->flush();
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
-
         return $this->redirectToRoute('task_list');
     }
-
 }

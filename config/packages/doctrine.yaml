@@ -4,13 +4,24 @@ doctrine:
         url: '%env(resolve:DATABASE_URL)%'
 
     orm:
+        # Génération des proxies en dev
         auto_generate_proxy_classes: true
 
-        # Ne plus se reposer sur auto_mapping seul, mais déclarer votre mapping
+        # 1) Désactive l’automapping du controller_resolver (fonctionnalité dépréciée)
+        controller_resolver:
+            auto_mapping: false
+
+        # 2) Active les “lazy ghost objects” (sinon déprécié en DoctrineBundle ≥ 2.11)
+        enable_lazy_ghost_objects: true
+
+        # 3) Préactive le nouveau mode “reportFieldsWhereDeclared” de l’AttributeDriver
+        report_fields_where_declared: true
+
+        # 4) Déclaration explicite de vos entités (on n’utilise plus auto_mapping)
         mappings:
             App:
                 is_bundle: false
-                type: attribute        # <<< IMPORTANT : on utilise les Attributes
+                type: attribute
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
