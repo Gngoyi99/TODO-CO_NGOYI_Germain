@@ -19,9 +19,10 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // Création du user Admin
+        // Création de l'utilisateur Admin
         $admin = new User();
         $admin->setUsername('admin');
+        $admin->setEmail('admin@example.com');
         $admin->setRoles(['ROLE_ADMIN']);
         // Hash du mot de passe
         $hashedPassword = $this->passwordHasher->hashPassword(
@@ -31,7 +32,7 @@ class AppFixtures extends Fixture
         $admin->setPassword($hashedPassword);
         $manager->persist($admin);
 
-        // Création de 3 tâches pour l'Admin
+        // Création de 3 tâches associées à l'Admin
         for ($i = 1; $i <= 3; $i++) {
             $task = new Task();
             $task->setTitle(sprintf('Tâche %d', $i));
@@ -39,6 +40,8 @@ class AppFixtures extends Fixture
             $task->setAuthor($admin);
             $manager->persist($task);
         }
+
+        // Envoi en base
         $manager->flush();
     }
 }
