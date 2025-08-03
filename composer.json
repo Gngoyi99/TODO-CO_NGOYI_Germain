@@ -35,7 +35,10 @@
     "require-dev": {
         "symfony/phpunit-bridge": "^5.4",
         "phpunit/phpunit": "^9.5",
-        "symfony/flex": "^2.8"
+        "symfony/flex": "^2.8",
+        "symfony/stopwatch": "*",
+        "symfony/web-profiler-bundle": "*",
+        "doctrine/doctrine-fixtures-bundle": "^4.0"
     },
     "scripts": {
         
